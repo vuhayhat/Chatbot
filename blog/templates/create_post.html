@@ -1,0 +1,28 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <div>
+        <h1 class="headline mt-4">Tạo Bài Viết</h1>
+        <div>
+            <h2 class="headline-intro-text">Vui lòng sử dụng mẫu dưới đây để tạo bài viết của bạn.</h2>
+        </div>
+        <hr>
+    </div>
+    <form method="post" class="form-text" enctype="multipart/form-data" style="margin-top: 1.3em;">
+        {{ form|crispy }}
+        {% csrf_token %}
+        <p class="mt-4">Đăng dưới tên: {{ user }}</p>
+        <button type="submit" class="btn btn-outline-secondary btn-sm mt-3 mb-3">Gửi</button>
+    </form>
+    {% else %}
+    <p class="access-denied card-text">Bạn không được phép ở đây!</p>
+    {% endif %}
+</div>
+
+{% endblock content %}

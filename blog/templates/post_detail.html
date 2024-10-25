@@ -1,0 +1,107 @@
+{% extends 'base_blog.html' %} 
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="masthead">
+    <div class="container">
+        <div class="row g-2">
+            <div class="col-md-6 masthead-text">
+                <!-- Tiêu đề bài viết -->
+                <h1 class="post-title">{{ post.title }}</h1>
+                <!-- Tác giả và ngày tạo bài viết -->
+                <p class="post-subtitle">{{ post.author }} | {{ post.created_on|date:"F d, Y" }}</p>
+            </div>
+            <div class="d-none d-md-block col-md-6 masthead-image">
+                <!-- Ảnh đại diện của bài viết -->
+                {% if "placeholder" in post.featured_image.url %}
+                <img src="{{ post.featured_image.url }}" width="50%" height="50%" alt="Featured Image">
+                {% else %}
+                <img src="{{ post.featured_image.url }}" width="50%" height="50%" alt="Featured Image">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col card mb-4 mt-3">
+            <div class="card-body">
+                <!-- Nội dung bài viết -->
+                <p class="card-text">
+                    {{ post.content | safe }}
+                </p>
+                <div class="row">
+                    <div class="col-2">
+                        <strong>
+                            {% if user.is_authenticated %}
+                            <form class="d-inline" action="{% url 'post_like' post.slug %}" method="POST">
+                                {% csrf_token %}
+                                {% if liked %}
+                                <button type="submit" name="blogpost_id" value="{{ post.slug }}" class="btn-like"><i class="fas fa-heart"></i></button>
+                                {% else %}
+                                <button type="submit" name="blogpost_id" value="{{ post.slug }}" class="btn-like"><i class="far fa-heart"></i></button>
+                                {% endif %}
+                            </form>
+                            {% else %}
+                            <span class="text-secondary"><i class="far fa-heart"></i></span>
+                            {% endif %}
+                            <span class="text-secondary">{{ post.number_of_likes }}</span>
+                        </strong>
+                    </div>
+                    <div class="col-2">
+                        {% with comments.count as total_comments %}
+                        <strong class="text-secondary"><i class="far fa-comments"></i>
+                            {{ total_comments }}</strong>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 card mb-4 mt-3">
+            <h3>Bình luận:</h3>
+            <div class="card-body">
+                {% for comment in comments %}
+                <div class="comments" style="padding: 10px;">
+                    <p class="font-weight-bold">
+                        {{ comment.name }}
+                        <span class="text-muted font-weight-normal">
+                            {{ comment.created_on|date:"F d, Y" }}
+                        </span> viết:
+                    </p>
+                    <!-- Nội dung bình luận -->
+                    {{ comment.body | linebreaks }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4 card mb-4 mt-3">
+            <div class="card-body">
+                {% if commented %}
+                <div class="alert alert-success" role="alert">
+                    Bình luận của bạn đang chờ duyệt
+                </div>
+                {% else %}
+                {% if user.is_authenticated %}
+                <h3>Để lại bình luận:</h3>
+                <p>Đăng nhập với: {{ user.username }}</p>
+                <form method="post" style="margin-top: 1.3em;">
+                    {{ comment_form | crispy }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-signup btn-lg">Gửi</button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <h1 class="headline mt-4">Hồ Sơ</h1>
+    <hr>
+    <div class="row">
+        <div class="col-12 mt-3">
+            <div class="card mb-4 border-0 shadow p-3 bg-white rounded">
+                <div class="card-body">
+                    <!-- Hiển thị thông báo thành công nếu có -->
+                    {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ edit_profile_form|crispy }}
+                        <button type="submit" class="btn btn-primary mt-3">Lưu Thay Đổi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

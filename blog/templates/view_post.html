@@ -1,0 +1,92 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div>
+        {% if user.is_authenticated %}
+        <h1 class="headline mt-4">Bài Viết Của Tôi</h1>
+        <div>
+            <h2 class="headline-intro-text">Tại đây, bạn có thể tìm thấy tất cả các bài viết mà bạn đã tạo!</h2>
+        </div>
+        <hr>
+    </div>
+    <div class="row">
+       
+        <div class="col-12 mt-3 left">
+            <div class="row">
+                {% for post in object_list %}
+                <div class="col-lg-4 col-md-12">
+                    <div class="card mb-4 border-0 shadow p-3 bg-white rounded">
+                        <div class="card-body">
+                           <div class="image-container">
+                            <a href="{% url 'post_detail' post.slug %}" class="post-link">
+                                {% if 'default_image' in post.featured_image.url %}
+                               
+                                <img class="card-img-top"
+                                    src=""
+                                    alt="Hình ảnh mặc định của bài viết">
+                                {% else %}
+                                <img class="card-img-top" src="{{ post.featured_image.url }}"
+                                    alt="Hình ảnh nổi bật của bài viết">
+                                {% endif %}
+                            </div>
+                            <p class="card-text mt-2 mb-2">
+                                <i class="far fa-heart"></i>
+                                {{ post.number_of_likes }}
+                            </p>
+                            <p class="card-text mb-1">{{ post.title }}</p>
+                            <p class="card-text">
+                                {% if user.id == post.author.id %}
+                                <a href="{% url 'update_post' post.slug %}"
+                                    class="btn btn-outline-secondary btn-sm">Cập Nhật</a>
+                                <a href="{% url 'delete_post' post.slug %}" class="btn btn-danger btn-sm">Xóa</a>
+                                {% endif %}
+                            </p>
+                            <p class="card-text">
+                                {% if post.status == 1 and not post.approved  %}
+                                <span class="card-awaiting-approval">Bài viết của bạn đang chờ phê duyệt</span>
+                                {% elif post.status == 0 and post.approved %}
+                                <span class="card-draft-approved">Bài viết của bạn đang ở trạng thái nháp nhưng đã được phê duyệt</span>
+                                {% elif post.status == 1 and post.approved %}
+                                <span class="card-published-approved">Bài viết của bạn đã được xuất bản và phê duyệt</span>
+                                {% elif post.status == 0 %}
+                                <span class="card-draft">Bài viết của bạn đang ở trạng thái nháp</span>
+                                {% endif %}
+                            </p>
+                            <hr>
+                            <p class="h6 card-text card-text-footer">
+                                Bởi <span class="author text-dark">{{ user.username }}</span> 
+                                {{ post.date_created_on|date:"Y-m-d" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}
+            </div>
+            <div class="row">
+                <hr>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm justify-content-center">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; TRANG TRƯỚC </a></li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> TRANG KẾ TIẾP &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+<hr>
+{% else %}
+<p class="access-denied card-text">Bạn không được phép truy cập vào đây!</p>
+{% endif %}
+
+{% endblock content %}

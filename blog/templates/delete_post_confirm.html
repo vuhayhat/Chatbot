@@ -1,0 +1,24 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="headline mt-4">Xóa Bài Viết</h1>
+    <div class="row">
+        <div class="col-12 mt-3">
+            <div class="card mb-4 border-0 shadow p-3 bg-white rounded">
+                <div class="card-body">
+                    <h2 class="card-title">Xác Nhận Xóa</h2>
+                    <p class="card-text">Bạn có chắc chắn muốn xóa bài viết có tiêu đề "{{ post.title }}" không?</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                        <a href="{% url 'view_post' %}" class="btn btn-secondary">Hủy</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

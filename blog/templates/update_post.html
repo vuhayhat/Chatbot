@@ -1,0 +1,19 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <h1 class="headline mt-4">Cập Nhật Bài Viết</h1>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Cập Nhật Bài Viết</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

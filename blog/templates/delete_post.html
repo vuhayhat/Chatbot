@@ -1,0 +1,29 @@
+{% extends 'base_blog.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated and user.id == post.author.id %}
+
+<div class="container">
+    <div class="row">
+        <div class="card-text col-md-8 mt-3 offset-md-2">
+            <h3>Xóa {{ post.artist }} | {{ post.title }}</h3>
+            <form method="post" style="margin-top: 1.3em;">
+                {{ form|crispy }}
+                {% csrf_token %}
+                <strong>Bạn có chắc chắn muốn xóa bài viết: {{ post.artist }} | {{ post.title }}?
+                    <br>Hành động này không thể hoàn tác!</strong>
+                <br>
+                <a href="{% url 'view_post' %}" class="btn btn-outline-secondary btn-sm">Hủy</a>
+                <button type="submit" class="btn btn-danger btn-sm mt-3 mb-3">Xóa đánh giá</button>
+            </form>
+            {% else %}
+            <p class="access-denied card-text">Bạn không được phép truy cập vào đây!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
